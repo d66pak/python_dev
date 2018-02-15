@@ -31,6 +31,7 @@ def main():
             'Prefix': PREFIX
         }
         d_response = s3.list_objects_v2(**kwargs)
+        # print str(d_response['IsTruncated'])
 
         if 'Contents' in d_response and d_response['Contents']:
             for d_content in d_response['Contents']:
@@ -58,6 +59,12 @@ def main():
                     print e.message
         else:
             print 'No content found!'
+
+        """
+        NOTE: list_objects_v2 is sending 'isTruncated' as True but returning the same
+        files in the second call. This will result is infinite loop. So, break!!
+        """
+        break
 
         # Check if the response was truncated
         if 'IsTruncated' in d_response and d_response['IsTruncated']:
