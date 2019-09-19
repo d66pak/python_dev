@@ -8,10 +8,10 @@ import boto3
 import base64
 from StringIO import StringIO
 
-PROFILE_NAME = 'default'
-S3_BUCKET = 'bucket-name'
-PREFIX = 'customersales/2018-02-14/'
-OUT_DIR = 'customersales-2018-02-14'
+PROFILE_NAME = 'tkt_prod_ro'
+S3_BUCKET = 'prod.au.vista.backup'
+PREFIX = 'seatstatus/2018-02-14/'
+OUT_DIR = 'seatstatus-2018-02-14'
 
 
 def decode_data(data):
@@ -48,13 +48,9 @@ def main():
                     in_file_obj.seek(0)
                     d_payload = json.loads(in_file_obj.read())
                     d_data = decode_data(d_payload['Data'])
-                    l_d_record = d_data['records']
                     outFileName = os.path.join(OUT_DIR, os.path.basename(key))
                     with open(outFileName, 'w') as fh:
-                        for d_record in l_d_record:
-                            d_record['arrivalTS'] = d_payload['approximateArrivalTimestamp']
-                            d_record['seqno'] = d_payload['sequenceNumber']
-                            fh.write(json.dumps(d_record) + '\n')
+                        fh.write(json.dumps(d_data) + '\n')
                 except Exception as e:
                     print 'Exception: ' + e.message
         else:

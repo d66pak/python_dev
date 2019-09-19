@@ -1,0 +1,24 @@
+---
+dev:
+  app_function: my_app.app
+  project_name: zappa-helloworl
+  profile_name: default
+  aws_region: ap-southeast-2
+  runtime: python3.6
+  s3_bucket: zappa-e2m9j5q25
+  aws_environment_variables:
+    LOG_LEVEL: DEBUG
+  num_retained_versions: 3 # Number of lambda versions to retain
+  keep_warm: true # Create CloudWatch events to keep the server warm.
+  keep_warm_expression: "rate(4 minutes)"
+  lambda_description: "Zappa Hello World!"
+  log_level: INFO # Zappa log level
+  cloudwatch_log_level: INFO
+  memory_size: 512
+  vpc_config:
+    SubnetIds:
+    - subnet-a9043edd
+    SecurityGroupIds:
+    - sg-121b0270
+  assume_policy: assume_role_policy.json
+  attach_policy: attach_policy_dev.json

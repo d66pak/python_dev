@@ -1,14 +1,24 @@
+"""
+Activate all the Storm topologies.
+
+USAGE: python StormActivateTopologies.py <storm_ui_host_port>
+
+Example: python StormActivateTopologies.py http://10.1.2.3:8080
+
+Crontab example: Assuming this script is present at location /home/ubuntu/storm_activate_deactivate
+
+0 1 * * * cd /home/ubuntu/storm_activate_deactivate; python StormActivateTopologies.py http://10.1.2.3:8080 &
+"""
+import sys
 import json
 import urllib
 import urllib2
 import logging
 from logging.handlers import RotatingFileHandler
 
-LOG_FILE_NAME = 'deactivate.log'
-STORM_UI_SERVERPORT = 'http://10.123.0.29:8080'
+LOG_FILE_NAME = 'activate.log'
 STORM_TOPOLOGY_SUMMARY = '/api/v1/topology/summary'
 STORM_TOPOLOGY_ACTIVATE = '/api/v1/topology/{topology_id}/activate'
-STORM_TOPOLOGY_DEACTIVATE = '/api/v1/topology/{topology_id}/deactivate'
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel('DEBUG')
@@ -18,19 +28,24 @@ LOG.addHandler(fh)
 
 
 def main():
-    summaryUrl = STORM_UI_SERVERPORT + STORM_TOPOLOGY_SUMMARY
+    if len(sys.argv) < 2:
+        LOG.error('Missing command line argument: StormUI host:port')
+        sys.exit(1)
+
+    storm_ui_serverport = sys.argv[1]
+    summaryUrl = storm_ui_serverport + STORM_TOPOLOGY_SUMMARY
     data = urllib2.urlopen(urllib2.Request(summaryUrl)).read()
     try:
         if data:
             d_data = json.loads(data)
             if 'topologies' in d_data and d_data['topologies']:
                 for d_topology in d_data['topologies']:
-                    url = STORM_UI_SERVERPORT + STORM_TOPOLOGY_DEACTIVATE.format(topology_id=d_topology['id'])
-                    LOG.info('Deactivating: %s', url)
+                    url = storm_ui_serverport + STORM_TOPOLOGY_ACTIVATE.format(topology_id=d_topology['id'])
+                    LOG.info('Activating: %s', url)
                     req = urllib2.Request(url, urllib.urlencode({}))
                     urllib2.urlopen(req)
             else:
-                LOG.error('No topologies found to deactivate.')
+                LOG.error('No topologies found to activate.')
         else:
             LOG.error('No response returned by GET: %s', summaryUrl)
     except:

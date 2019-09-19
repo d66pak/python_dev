@@ -51,5 +51,5 @@ if __name__ == '__main__':
     fromDT1, toDT1 = convertToTimezone1(dtStr, toTZStr)
     fromDT2, toDT2 = convertToTimezone2(dtStr, toTZStr)
 
-    print 'Method 1 -->  ' + 'From\t' + str(fromDT1) + '\tTo\t' + str(toDT1)
-    print 'Method 2 -->  ' + 'From\t' + str(fromDT2) + '\tTo\t' + str(toDT2)
+    print 'Method 1 -->  ' + 'From\t' + fromDT1.isoformat() + '\tTo\t' + toDT1.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+    print 'Method 2 -->  ' + 'From\t' + fromDT2.isoformat() + '\tTo\t' + toDT2.isoformat()
