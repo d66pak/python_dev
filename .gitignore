@@ -49,3 +49,5 @@
 /amazon-redshift-utils/
 /snowpipe/
 /bulkreturn.py
+/generateFilebeatConfig.py
+/redshiftUnloadCopy_venv/
